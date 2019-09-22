@@ -58,5 +58,4 @@ public class Deck {
             throw new TableCardNotFoundException();
         }
     }
-
 }

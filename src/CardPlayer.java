@@ -6,7 +6,7 @@ public class CardPlayer {
     private List<Card> myCards = new ArrayList<>();
 
     public CardPlayer(String playerName) {
-        name = playerName;
+        name = "玩家 " + playerName.toUpperCase();
     }
 
     private List<Card> checkUno(Card tableCard) {
@@ -25,36 +25,51 @@ public class CardPlayer {
     }
 
     public Card playCard(Card tableCard) {
-        List<Card> handCards = (tableCard == null) ? myCards : checkUno(tableCard);
+        List<Card> handCards = cardSort((tableCard == null) ? myCards : checkUno(tableCard));
         assert handCards != null;
         Card pickCard = chooseCard(handCards);
         myCards.remove(pickCard);
         return pickCard;
     }
 
+    private List<Card> cardSort(List<Card> handCards) {
+        handCards.sort((card1, card2) -> {
+            if (card1.getRank() == card2.getRank()) {
+                return 0;
+            }
+            return (card1.getRank() > card2.getRank()) ? 1 : -1;
+        });
+        return handCards;
+    }
+
     private Card chooseCard(List<Card> handCards) {
         do {
+
             try {
+
                 if (handCards.isEmpty()) {
                     throw new NoCardIsValidException();
                 }
-                System.out.print("[牌面] ");
+
+                System.out.print("[牌面] " + getName() + " 手牌 : ");
                 for (int cardIndex = 1; cardIndex < handCards.size() + 1; cardIndex++) {
                     if (cardIndex % 10 == 0) {
-                        System.out.print("\n[牌面] ");
+                        System.out.print("\n[牌面] " + getName() + " : ");
                     }
-                    System.out.print("(" + cardIndex + ") " + handCards.get(cardIndex - 1) + " ");
+                    System.out.print(cardIndex + ". " + handCards.get(cardIndex - 1) + " | ");
                 }
+
                 if (isUno(myCards) && isUno(handCards)) {
                     if (sayUno()) {
                         System.out.print("[聽牌] " + getName() + " 喊出Uno");
                     } else {
                         System.out.println("[罰抽] 抽牌");
-                        return null;
+                        throw new NoUnoCallException();
                     }
                 }
-                System.out.print("\n[輸入] " + "玩家 " + getName() + " 請輸入要打出的牌 : ");
+                System.out.print("\n[輸入] " + getName() + " 請輸入要打出的牌 : ");
                 return handCards.get(Integer.parseInt(GameSystem.scanner.nextLine()) - 1);
+
             } catch (NumberFormatException e) {
                 System.out.println("[例外] 輸入了文字，請輸入數字");
             } catch (IndexOutOfBoundsException e) {

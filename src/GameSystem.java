@@ -15,6 +15,7 @@ public class GameSystem {
         Deck deck = new Deck();
         List<CardPlayer> cardPlayers = new ArrayList<>(4);
         int playerAmount = setPlayerAmount();
+
         for (int playerIndex = 0; playerIndex < playerAmount; playerIndex++) {
             System.out.print("[輸入] 第 " + (playerIndex + 1) + " 位玩家名字 : ");
             cardPlayers.add(new CardPlayer(scanner.nextLine()));
@@ -23,9 +24,9 @@ public class GameSystem {
 
         while (true) {
             for (CardPlayer player : cardPlayers) {
-                playCard(player, deck);
+                deck.setDiscards(playCard(player, deck));
                 if (player.isWin()) {
-                    System.out.println("[遊戲結束] " + player.getName() + " 獲勝");
+                    System.out.println("[遊戲結束] " + player.getName() + " 獲勝" + "\n");
                     return;
                 }
             }
@@ -51,22 +52,34 @@ public class GameSystem {
         }
     }
 
-    private void playCard(CardPlayer player, Deck deck) {
+    private Card playCard(CardPlayer player, Deck deck) {
         while (true) {
-            Card playCard;
             try {
-                playCard = deck.getTableCard();
+                System.out.println("[桌牌] " + deck.getTableCard());
+                Card playCard = player.playCard(deck.getTableCard());
                 System.out.println("[出牌] " + player.getName() + " 打出" + playCard);
-                deck.setDiscards(playCard);
+                return playCard;
             } catch (TableCardNotFoundException e) {
-                e.message();
-                player.playCard(null);
+                return player.playCard(null);
             } catch (NoCardIsValidException e) {
                 e.message();
-                System.out.println("[抽牌] " + player.getName() + " 抽牌");
-                player.drawCard(deck.dealCard());
+                drawCard(player, deck);
+            } catch (NoUnoCallException e) {
+                for (int punishTimes = 1; punishTimes <= 2; punishTimes++) {
+                    drawCard(player, deck);
+                }
             }
         }
+    }
+
+    private void drawCard(CardPlayer player, Deck deck) {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException err) {
+            err.printStackTrace();
+        }
+        System.out.println("[抽牌] " + player.getName() + " 抽牌");
+        player.drawCard(deck.dealCard());
     }
 
 }
