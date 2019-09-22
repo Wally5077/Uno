@@ -8,10 +8,10 @@ public class Deck {
     private List<Card> discardDeck = new ArrayList<>(76);
 
     public Deck() {
-        createNewDeck();
+        createDeck();
     }
 
-    private void createNewDeck() {
+    private void createDeck() {
         for (Suit suit : Suit.values()) {
             deck.add(new Card(suit, 0));
             for (int rank = 1; rank < 10; rank++) {

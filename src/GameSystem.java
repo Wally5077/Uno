@@ -21,13 +21,14 @@ public class GameSystem {
             cardPlayers.add(new CardPlayer(scanner.nextLine()));
             dealHandCards(cardPlayers.get(playerIndex), deck);
         }
-
-        while (true) {
+        boolean isGameOver = false;
+        while (!isGameOver) {
             for (CardPlayer player : cardPlayers) {
                 deck.setDiscards(playCard(player, deck));
                 if (player.isWin()) {
                     System.out.println("[遊戲結束] " + player.getName() + " 獲勝" + "\n");
-                    return;
+                    isGameOver = true;
+                    break;
                 }
             }
         }
@@ -55,14 +56,13 @@ public class GameSystem {
     private Card playCard(CardPlayer player, Deck deck) {
         while (true) {
             try {
-                System.out.println("[桌牌] " + deck.getTableCard());
                 Card playCard = player.playCard(deck.getTableCard());
                 System.out.println("[出牌] " + player.getName() + " 打出" + playCard);
                 return playCard;
             } catch (TableCardNotFoundException e) {
                 return player.playCard(null);
             } catch (NoCardIsValidException e) {
-                e.message();
+                System.out.println("[例外] " + player.getName() + " 無牌可出");
                 drawCard(player, deck);
             } catch (NoUnoCallException e) {
                 for (int punishTimes = 1; punishTimes <= 2; punishTimes++) {
@@ -74,7 +74,7 @@ public class GameSystem {
 
     private void drawCard(CardPlayer player, Deck deck) {
         try {
-            Thread.sleep(500);
+            Thread.sleep(50);
         } catch (InterruptedException err) {
             err.printStackTrace();
         }
