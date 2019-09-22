@@ -23,7 +23,7 @@ public class Deck {
     }
 
     private void shuffle() {
-        Card cards[] = (Card[]) deck.toArray();
+        Card[] cards = deck.toArray(new Card[deck.size()]);
         deck.clear();
 
         for (int cardIndex = 0; cardIndex < 76; cardIndex++) {
@@ -36,15 +36,15 @@ public class Deck {
     }
 
     public Card dealCard() {
-        //發牌至玩家
         if (deck.isEmpty()) {
             deck.addAll(discardDeck);
             discardDeck.clear();
             shuffle();
         }
-        Card card = deck.get(deck.size() - 1);
-        deck.remove(card);
-        return card;
+        int removeCardIndex = (deck.size() - 1);
+        Card removeCard = deck.get(removeCardIndex);
+        deck.remove(removeCardIndex);
+        return removeCard;
     }
 
     public void setDiscards(Card playCard) {
@@ -52,8 +52,11 @@ public class Deck {
     }
 
     public Card getTableCard() {
-        //取得桌牌
-        return discardDeck.get(discardDeck.size() - 1);
+        try {
+            return discardDeck.get(discardDeck.size() - 1);
+        } catch (IndexOutOfBoundsException e) {
+            throw new TableCardNotFoundException();
+        }
     }
 
 }

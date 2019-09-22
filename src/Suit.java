@@ -1,3 +1,3 @@
 public enum Suit {
-    RED, BLUE, YELLOW, GREEN
+    紅色,綠色,黃色,藍色
 }
