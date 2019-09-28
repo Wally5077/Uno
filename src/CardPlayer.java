@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CardPlayer {
     private String name;
@@ -10,14 +11,8 @@ public class CardPlayer {
     }
 
     private List<Card> checkUno(Card tableCard) {
-        List<Card> handCards = new ArrayList<>();
-        myCards.forEach(card -> {
-                    if (card.isTheCardValid(tableCard)) {
-                        handCards.add(card);
-                    }
-                }
-        );
-        return handCards;
+        return myCards.stream().filter(card -> card.isTheCardValid(tableCard))
+                .collect(Collectors.toList());
     }
 
     public void drawCard(Card card) {

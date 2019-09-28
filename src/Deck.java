@@ -23,7 +23,7 @@ public class Deck {
     }
 
     private void shuffle() {
-        Card[] cards = deck.toArray(new Card[deck.size()]);
+        Card[] cards = deck.toArray(new Card[0]);
         deck.clear();
 
         for (int cardIndex = 0; cardIndex < 76; cardIndex++) {
@@ -51,11 +51,11 @@ public class Deck {
         discardDeck.add(playCard);
     }
 
-    public Card getTableCard() {
+    public Card getTopTableCard() {
         try {
             return discardDeck.get(discardDeck.size() - 1);
         } catch (IndexOutOfBoundsException e) {
-            throw new TableCardNotFoundException();
+            throw new TopTableCardNotFoundException();
         }
     }
 }

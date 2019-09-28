@@ -38,8 +38,8 @@ public class GameSystem {
         do {
             try {
                 System.out.print("[輸入] 輸入玩家數量 : ");
-                String selectPlayerAmoint = scanner.nextLine();
-                return (Integer.parseInt(selectPlayerAmoint));
+                String selectPlayerAmount = scanner.nextLine();
+                return (Integer.parseInt(selectPlayerAmount));
             } catch (NumberFormatException e) {
                 System.out.println("[例外] 請輸入數字");
             }
@@ -56,14 +56,17 @@ public class GameSystem {
     private Card playCard(CardPlayer player, Deck deck) {
         while (true) {
             try {
-                Card playCard = player.playCard(deck.getTableCard());
+                Card playCard = player.playCard(deck.getTopTableCard());
                 System.out.println("[出牌] " + player.getName() + " 打出" + playCard);
                 return playCard;
-            } catch (TableCardNotFoundException e) {
+
+            } catch (TopTableCardNotFoundException e) {
                 return player.playCard(null);
+
             } catch (NoCardIsValidException e) {
                 System.out.println("[例外] " + player.getName() + " 無牌可出");
                 drawCard(player, deck);
+
             } catch (NoUnoCallException e) {
                 for (int punishTimes = 1; punishTimes <= 2; punishTimes++) {
                     drawCard(player, deck);
